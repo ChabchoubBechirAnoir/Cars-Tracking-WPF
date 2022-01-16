@@ -13,15 +13,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="1" Margin="0,0,0,0">
-            <TextBox x:Name="txtLocation" Height="20" Width="auto"/>
-            <Button x:Name="btnAdd" Click="ButtonAddName_Click" Height="20" Width="50" Content="Search"/>
+        
+        <StackPanel VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="txtLocation" Height="auto" Width="auto"/>
+                <Button x:Name="btnGoToLocation" Click="GoToLocation" Height="auto" Width="auto" Content="Search"/>
+            </StackPanel>
         </StackPanel>
-
         <gmaps:GMapControl x:Name="mapView" 
                            Loaded="mapView_Loaded"
                            MouseDoubleClick="MapWithPushpins_MouseDoubleClick"
-                           Margin="0,40,0,0" 
+                           Margin="0,20,0,0" 
                            Grid.Row="1" />
 
     </Grid>

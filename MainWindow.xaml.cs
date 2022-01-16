@@ -20,7 +20,6 @@ namespace WpfMap
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Guid guid = Guid.NewGuid();
         public MainWindow()
         {
             InitializeComponent();
@@ -36,8 +35,8 @@ namespace WpfMap
             mapView.CanDragMap = true;
             mapView.DragButton = MouseButton.Left;
             GMaps.Instance.Mode = AccessMode.ServerOnly;
-            mapView.SetPositionByKeywords("Tunisie");
-            mapView.Zoom = 7;
+            mapView.SetPositionByKeywords("Paris");
+            mapView.Zoom = 12;
             mapView.ShowCenter = true;
             var routesInDb = RouteDataService.GetRouteDataAsync().Result;
             foreach (var route in routesInDb)
@@ -47,16 +46,19 @@ namespace WpfMap
                 {
                     Width = 10,
                     Height = 10,
-                    Stroke = Brushes.DarkRed,
+                    Stroke = route.Vehicule.FromColorToBrushes(),
                     StrokeThickness = 1.5
                 };
+                marker.Tag = route.Vehicule.Id;
                 mapView.Markers.Add(marker);
             }
-            var lineRoute = DrawRoute();
-            mapView.Markers.Clear();
-            mapView.Markers.Add(lineRoute);
+            DrawRoute();
+            while (mapView.Markers.FirstOrDefault(m => (int)m.Tag != 100) != null)
+            {
+                mapView.Markers.Remove(mapView.Markers.FirstOrDefault(m => (int)m.Tag != 100));
+            }
         }
-        private void ButtonAddName_Click(object sender, RoutedEventArgs e)
+        private void GoToLocation(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtLocation.Text))
             {
@@ -79,32 +81,40 @@ namespace WpfMap
             mapView.Markers.Add(marker);
             var newRouteData = new RouteData()
             {
-                Id = mapView.Markers.Count.ToString(),
                 X = lat,
                 Y = lng,
-                Vehicle_Id = guid
+                Vehicle_Id = 5
             };
 
             RouteDataService.AddRouteDataAsync(newRouteData);
-            if (mapView.Markers.Count % 10 == 0)
-            {
-                DrawRoute();
-            }
         }
-        private GMapRoute DrawRoute()
+        private void DrawRoute()
         {
-            var locations = mapView.Markers.Where(m => m.Tag != "Route").Select(m => m.Position).TakeLast(10).ToList();
-            GMapRoute gmRoute = new GMapRoute(locations);
-            gmRoute.Tag = "Route";
-            CalculateDistance();
-            //mapView.Markers.Clear();
-            mapView.Markers.Add(gmRoute);
-            return gmRoute;
+            var vehicles = VehicleService.GetVehicules().Result;
+            foreach (var vehicle in vehicles)
+            {
+                var locations = mapView.Markers.Where(m => (int)m.Tag == vehicle.Id)?.Select(m => m.Position)?.ToList();
+                if (locations!= null && locations.Count != 0)
+                {
+                    GMapRoute gmRoute = new GMapRoute(locations);
+                    gmRoute.Tag = 100;
+                    gmRoute.Shape = new Path
+                    {
+                        Width = 10,
+                        Height = 10,
+                        Stroke = vehicle.FromColorToBrushes(),
+                        StrokeThickness = 1.5
+                    };
+                    CalculateDistance();
+                    //mapView.Markers.Clear();
+                    mapView.Markers.Add(gmRoute);
+                }
+            }
         }
         private void CalculateDistance()
         {
             double distance = 0;
-            for (var i = 1 ; i < mapView.Markers.Where(m => m.Tag != "Route").ToList().Count; i++)
+            for (var i = 1 ; i < mapView.Markers.Where(m => (int)m.Tag != 100).ToList().Count; i++)
             {
                 var initial = mapView.Markers[i].Position;
 

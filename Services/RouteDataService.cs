@@ -18,7 +18,7 @@ namespace WpfMap.Services
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(newRouteData);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync(uri, data);
+            var response = await httpClient.PostAsync(uri, data).ConfigureAwait(false);
         }
         public static async Task<List<RouteData>> GetRouteDataAsync()
         {
@@ -26,7 +26,13 @@ namespace WpfMap.Services
             HttpClient httpClient = new HttpClient();
 
             var response = httpClient.GetAsync(uri).Result.Content.ReadAsStringAsync().Result;
-            return  JsonConvert.DeserializeObject<List<RouteData>>(response);
+            var vehicles = VehicleService.GetVehicules().Result;
+            var routeDatas =  JsonConvert.DeserializeObject<List<RouteData>>(response);
+            foreach (var routeData in routeDatas)
+            {
+                routeData.Vehicule = vehicles.Where(v => v.Id == routeData.Vehicle_Id).FirstOrDefault();
+            }
+            return routeDatas;
         }
     }
 }
