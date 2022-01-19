@@ -45,7 +45,6 @@ namespace Login_WPF
             textBoxFirstName.Text = "";
             textBoxLastName.Text = "";
             textBoxEmail.Text = "";
-            textBoxAddress.Text = "";
             passwordBox1.Password = "";
             passwordBoxConfirm.Password = "";
         }
@@ -93,7 +92,6 @@ namespace Login_WPF
                     var isRegistered = IdentityProviderService.RegisterUser(newUser).Result;
                     if (isRegistered)
                     {
-                        welcome.txtLocation.Text = email;//Sending value from one form to another form.  
                         welcome.Show();
                         Close();
                     }

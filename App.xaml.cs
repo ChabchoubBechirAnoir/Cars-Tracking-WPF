@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GMap.NET;
 using System.Windows;
 
 namespace WpfMap
@@ -13,5 +8,7 @@ namespace WpfMap
     /// </summary>
     public partial class App : Application
     {
+        public static int vehiculeId;
+        public static PointLatLng? mapCenter = null;
     }
 }

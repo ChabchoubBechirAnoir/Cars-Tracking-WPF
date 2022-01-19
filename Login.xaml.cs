@@ -52,7 +52,6 @@ namespace Login_WPF
                 var isLoggedIn = IdentityProviderService.LoginUser(new User(email, password)).Result;
                 if (isLoggedIn)
                 {
-                    welcome.txtLocation.Text = email;//Sending value from one form to another form.  
                     welcome.Show();
                     Close();
                 }

@@ -8,24 +8,47 @@
         xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         Title="GetMeHome" Height="auto" Width="auto">
 
-    <Grid>
+    <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        
-        <StackPanel VerticalAlignment="Bottom">
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="txtLocation" Height="auto" Width="auto"/>
-                <Button x:Name="btnGoToLocation" Click="GoToLocation" Height="auto" Width="auto" Content="Search"/>
-            </StackPanel>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1200" />
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
         <gmaps:GMapControl x:Name="mapView" 
                            Loaded="mapView_Loaded"
                            MouseDoubleClick="MapWithPushpins_MouseDoubleClick"
-                           Margin="0,20,0,0" 
-                           Grid.Row="1" />
-
+                           Margin="0,0,0,0" 
+                           Grid.Row="1" Grid.Column="0"/>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <ItemsControl x:Name="ic" Grid.Row="0">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding ButtonContent}"></TextBox>
+                        <Button Grid.Row="0" Grid.Column="1" Content="Select" Command="{Binding Path=SaveCommand}" Background="{Binding ButtonColor}"/>
+                        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding ButtonDistance}"></TextBox>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+            <ListBox Grid.Row="1" Name="lbTodoList" ></ListBox>
+        </Grid>
     </Grid>
 
 

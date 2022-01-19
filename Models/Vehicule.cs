@@ -29,6 +29,9 @@ namespace MapFollow.Models
                 case "Black":
                     return Brushes.Black;
                     break;
+                case "Purple":
+                    return Brushes.Purple;
+                    break;
                 default:
                     return Brushes.Yellow;
                     break;
